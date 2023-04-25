@@ -1,15 +1,36 @@
-CREATE TABLE PEDIDO_NOVOS AS SELECT * FROM PEDIDO;
+CREATE TABLE tb_aufitoria(
+id NUMBER generated always as identity,
+tabela VARCHAR2(30),
+operacao VARCHAR2(30),
+data DATE,
+usuario VARCHAR2(30)
+)
 
-ALTER TABLE PEDIDO_NOVOS ADD STATUS VARCHAR(30);
-
-SELECT * FROM PEDIDO_NOVOS;
-
-
-CREATE OR REPLACE TRIGGER trg_pedido
-  BEFORE INSERT ON pedido_novos
-  FOR EACH ROW
+CREATE OR REPLACE TRIGGER trg_auditoria
+AFTER INSERT OR UPDATE OR DELETE ON pedido_novos?
+FOR EACH ROW
+DECLARE
+  operacao     VARCHAR2(30);?
+  nome_usuario VARCHAR2(100);?
 BEGIN
-IF :NEW.STATUS IS NULL THEN
-:NEW.STATUS := 'novo Pedido';
-END IF;
-END;
+ IF INSERTING THEN?
+ operacao := 'INSERT';
+  ELSIF UPDATING THEN?
+    operacao := 'UPDATE';?
+  ELSIF DELETING THEN?
+    operacao := 'DELETE';?
+  END IF;?
+  
+  nome_usuario := SYS_CONTEXT('USERENV', 'SESSION_USER');?
+  
+  INSERT INTO TB_AUDITORIA?
+
+    (tabela, operacao, DATA, USUARIO)?
+
+  VALUES?
+
+    ('PEDIDO_NOVOS', operacao, sysdate, nome_usuario);?
+
+END;?
+ 
+
